@@ -1,0 +1,611 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blessing Draw</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #faf7f2; /* Lighter ivory background */
+      font-family: 'Noto Sans TC', sans-serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .lang-hi {
+      font-family: 'Noto Serif Devanagari', sans-serif; /* Hindi font */
+    }
+    .rose-gold {
+      background-color: #d1a8ac; /* Subtler rose gold */
+      color: #fff;
+      border-radius: 25px; /* Rounded buttons */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      border: none;
+    }
+    .password-section {
+      max-width: 600px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+      border-radius: 20px;
+      background-color: #fff;
+    }
+    .input-group input {
+      border-radius: 25px; /* Rounded input field */
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .reel-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 20px; /* Rounded reel */
+      margin: 20px 0;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    }
+    .reel-container:hover {
+      transform: scale(1.05); /* Zoom-in effect */
+    }
+    .reel-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      min-height: 50px;
+      text-align: center;
+    }
+    .reel-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      background-color: #d1a8ac;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 50%; /* Circular icon */
+      display: none;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 4px; /* Slim progress bar */
+      background-color: #e0e0e0;
+      border-radius: 2px;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #d1a8ac;
+      width: 0;
+      border-radius: 2px;
+      transition: width 5s linear; /* Matches 5s animation */
+    }
+    .modal-content {
+      background-color: #faf7f2;
+      border-radius: 20px; /* Rounded modal */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      border: none;
+    }
+    .btn-primary {
+      transition: transform 0.2s;
+    }
+    .btn-primary:active {
+      transform: scale(0.95); /* Scale bounce on click */
+    }
+    .language-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .slider-container {
+      display: flex;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    .slider-option {
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    .slider-option:hover {
+      background-color: #f0f0f0;
+    }
+    .slider-option.active {
+      background-color: #d1a8ac;
+      color: #fff;
+    }
+    .blessing-modal .modal-dialog {
+      max-width: 90%;
+      margin: 30px auto;
+    }
+    .copy-icon-btn {
+      font-size: 1.2rem;
+      padding: 8px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .copy-confirm-modal .modal-dialog {
+      max-width: 200px; /* Small modal for copy confirmation */
+      margin: 30px auto;
+    }
+    .copy-confirm-modal .modal-content {
+      padding: 10px;
+      text-align: center;
+    }
+    @media (max-width: 576px) {
+      .password-section {
+        margin: 20px;
+        padding: 10px;
+      }
+      .reel-text {
+        font-size: 1.2rem;
+      }
+      .blessing-modal .modal-dialog {
+        max-width: 95%;
+      }
+      .slider-option {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+      .copy-confirm-modal .modal-dialog {
+        max-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Switcher -->
+  <div class="language-switcher">
+    <div class="slider-container">
+      <div class="slider-option active" data-lang="zh">中文</div>
+      <div class="slider-option" data-lang="en">English</div>
+      <div class="slider-option" data-lang="ro">Română</div>
+      <div class="slider-option" data-lang="th">ไทย</div>
+      <div class="slider-option" data-lang="hi">हिन्दी</div>
+      <div class="slider-option" data-lang="es">Español</div>
+    </div>
+  </div>
+
+  <!-- Password Section -->
+  <div class="password-section">
+    <h2 id="passwordTitle" class="lang-zh">輸入彩蛋密碼</h2>
+    <div class="input-group mb-3">
+      <input type="password" id="passwordInput" class="form-control" placeholder="密碼">
+      <button class="btn rose-gold" type="button" id="submitPassword">輸入</button>
+    </div>
+  </div>
+
+  <!-- Blessing Modal (Contains Congrats Message and Reel) -->
+  <div class="modal fade blessing-modal" id="blessingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title lang-zh" id="blessingModalTitle">恭喜您！您已解鎖彩蛋密碼！</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="congratsMessage" class="lang-zh">恭喜您！您已解鎖彩蛋密碼，快來領取您的祝福！</p>
+          <div class="reel-container" id="reelContainer">
+            <div class="reel-text" id="reelText">點擊以抽取祝福</div>
+            <span class="reel-icon" id="reelIcon">></span>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Blessing Modal -->
+  <div class="modal fade" id="finalBlessingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title lang-zh" id="finalBlessingModalTitle">您已收到今日的祝福！</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="blessingVerse" class="lang-zh"></p>
+          <p id="blessingMessage" class="lang-zh"></p>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button type="button" class="btn rose-gold copy-icon-btn" id="copyBlessing" title="點擊查看">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incorrect Password Modal -->
+  <div class="modal fade" id="incorrectPasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title lang-zh" id="incorrectPasswordTitle">錯誤</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="incorrectPasswordMessage" class="lang-zh">密碼錯誤，請再試一次。</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn rose-gold" data-bs-dismiss="modal">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copy Confirmation Modal -->
+  <div class="modal fade copy-confirm-modal" id="copyConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p id="copyConfirmMessage" class="lang-zh">已複製到剪貼板</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Language Translations
+    const translations = {
+      zh: {
+        passwordTitle: "輸入彩蛋密碼",
+        passwordPlaceholder: "密碼",
+        submitPassword: "輸入",
+        incorrectPasswordTitle: "錯誤",
+        incorrectPasswordMessage: "密碼錯誤，請再試一次。",
+        closeButton: "關閉",
+        congratsMessage: "恭喜您！",
+        blessingModalTitle: "您已解鎖彩蛋密碼，快來領取您的祝福！",
+        finalBlessingModalTitle: "您已收到今日的祝福！",
+        copyBlessing: "點擊查看",
+        copyConfirmMessage: "已複製到剪貼板",
+        reelStartText: "點擊以抽取祝福"
+      },
+      en: {
+        passwordTitle: "Enter Easter Egg Password",
+        passwordPlaceholder: "Password",
+        submitPassword: "Enter",
+        incorrectPasswordTitle: "Error",
+        incorrectPasswordMessage: "Incorrect password. Please try again.",
+        closeButton: "Close",
+        congratsMessage: "Congratulations! ",
+        blessingModalTitle: "You’ve unlocked the Easter egg password. Come and receive your blessing!",
+        finalBlessingModalTitle: "You have received today’s blessing!",
+        copyBlessing: "Copy",
+        copyConfirmMessage: "Copied to clipboard",
+        reelStartText: "Click to draw a blessing"
+      },
+      ro: {
+        passwordTitle: "Introdu Parola de Paște",
+        passwordPlaceholder: "Parolă",
+        submitPassword: "Introdu",
+        incorrectPasswordTitle: "Eroare",
+        incorrectPasswordMessage: "Parolă incorectă. Vă rugăm să încercați din nou.",
+        closeButton: "Închide",
+        congratsMessage: "Felicitări! ",
+        blessingModalTitle: "Ați deblocat parola oului de Paște. Veniți să primiți binecuvântarea!",
+        finalBlessingModalTitle: "Ați primit binecuvântarea de astăzi!",
+        copyBlessing: "Copiază",
+        copyConfirmMessage: "Copiat în clipboard",
+        reelStartText: "Apăsați pentru a extrage o binecuvântare"
+      },
+      th: {
+        passwordTitle: "ป้อนรหัสไข่อีสเตอร์",
+        passwordPlaceholder: "รหัสผ่าน",
+        submitPassword: "ป้อน",
+        incorrectPasswordTitle: "ข้อผิดพลาด",
+        incorrectPasswordMessage: "รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง",
+        closeButton: "ปิด",
+        congratsMessage: "ยินดีด้วย! ",
+        blessingModalTitle: "คุณได้ปลดล็อกรหัสไข่อีสเตอร์ มารับพรของคุณ!",
+        finalBlessingModalTitle: "คุณได้รับพรของวันนี้!",
+        copyBlessing: "คัดลอก",
+        copyConfirmMessage: "คัดลอกไปยังคลิปบอร์ดแล้ว",
+        reelStartText: "คลิกเพื่อจับฉลากพร"
+      },
+      hi: {
+        passwordTitle: "ईस्टर एग पासवर्ड दर्ज करें",
+        passwordPlaceholder: "पासवर्ड",
+        submitPassword: "दर्ज करें",
+        incorrectPasswordTitle: "त्रुटि",
+        incorrectPasswordMessage: "गलत पासवर्ड। कृपया फिर से प्रयास करें।",
+        closeButton: "बंद करें",
+        congratsMessage: "बधाई हो! ",
+        blessingModalTitle: "आपने ईस्टर एग पासवर्ड अनलॉक कर लिया है। अपनी आशीर्वाद प्राप्त करें!",
+        finalBlessingModalTitle: "आपको आज का आशीर्वाद मिल गया है!",
+        copyBlessing: "कॉपी करें",
+        copyConfirmMessage: "क्लिपबोर्ड पर कॉपी किया गया",
+        reelStartText: "आशीर्वाद प्राप्त करने के लिए क्लिक करें"
+      },
+      es: {
+        passwordTitle: "Ingresa la contraseña del huevo de Pascua",
+        passwordPlaceholder: "Contraseña",
+        submitPassword: "Ingresar",
+        incorrectPasswordTitle: "Error",
+        incorrectPasswordMessage: "Contraseña incorrecta. Por favor, intenta de nuevo.",
+        closeButton: "Cerrar",
+        congratsMessage: "¡Felicidades! ",
+        blessingModalTitle: "¡Has desbloqueado la contraseña del huevo de Pascua. ¡Ven y recibe tu bendición!",
+        finalBlessingModalTitle: "¡Has recibido la bendición de hoy!",
+        copyBlessing: "Copiar",
+        copyConfirmMessage: "Copiado al portapapeles",
+        reelStartText: "Haz clic para obtener una bendición"
+      }
+    };
+
+    // Blessings Data (Remains Chinese)
+    const blessings = [
+      { verse: "詩篇 23:1", message: "願主成為你一生的牧者，讓你不再缺乏。" },
+      { verse: "約翰福音 3:16", message: "神愛世人，為你賜下獨生子。" },
+      { verse: "腓立比書 4:13", message: "靠著那加給我力量的，我凡事都能做。" },
+      { verse: "詩篇 91:11", message: "祂必為你吩咐使者，在你行的一切路上保護你。" },
+      { verse: "耶利米書 29:11", message: "我為你們定的計劃，是賜平安的計劃。" },
+      { verse: "馬太福音 5:16", message: "讓你的光照在人前，榮耀歸於天父。" },
+      { verse: "箴言 3:5", message: "你要專心仰賴耶和華，不可倚靠自己的聰明。" },
+      { verse: "以賽亞書 40:31", message: "仰望耶和華的，必重新得力，如鷹展翅上騰。" },
+      { verse: "羅馬書 15:13", message: "願賜盼望的神，使你滿有喜樂和平安。" },
+      { verse: "詩篇 37:4", message: "以耶和華為樂，祂就將你心裡所求的賜給你。" },
+      { verse: "約書亞記 1:9", message: "你當剛強壯膽，因為耶和華與你同在。" },
+      { verse: "歌林多前書 16:14", message: "凡你們所做的，都要憑愛心而做。" },
+      { verse: "詩篇 121:8", message: "你出你入，耶和華要保護你，從今時直到永遠。" },
+      { verse: "傳道書 3:1", message: "凡事都有定期，天下萬務都有定時。" },
+      { verse: "約翰一書 4:19", message: "我們愛，因為神先愛我們。" }
+    ];
+
+    // Reel Phrases (All Languages Combined)
+    const reelPhrases = [
+      // Chinese
+      "祝福你", "新婚快樂", "神的恩典", "平安喜樂", "愛與希望",
+      "永恆之光", "恩惠滿溢", "喜樂泉源", "神聖指引", "心靈安寧",
+      "幸福 cultiv滿", "健康長壽", "前程似錦", "家庭和睦", "事業順利",
+      "真愛永恆", "喜樂平安", "神與你同在", "恩典滿溢", "希望之光",
+      // English
+      "Bless You", "Happy Wedding", "God’s Grace", "Peace and Joy", "Love and Hope",
+      "Eternal Light", "Abundant Grace", "Source of Joy", "Divine Guidance", "Inner Peace",
+      "Happiness Forever", "Long Life", "Bright Future", "Family Harmony", "Career Success",
+      "True Love", "Joyful Peace", "God With You", "Overflowing Grace", "Light of Hope",
+      // Romanian
+      "Fii binecuvântat", "Nuntă fericită", "Harul lui Dumnezeu", "Pace și bucurie", "Iubire și speranță",
+      "Lumină eternă", "Har abundent", "Sursă de bucurie", "Ghidare divină", "Pace interioară",
+      "Fericire veșnică", "Viață lungă", "Viitor strălucit", "Armonie în familie", "Succes în carieră",
+      "Iubire adevărată", "Bucurie și pace", "Dumnezeu cu tine", "Har revărsat", "Lumină a speranței",
+      // Thai
+      "ขอพร", "งานแต่งงานมีความสุข", "พระคุณของพระเจ้า", "สันติสุขและความยินดี", "ความรักและความหวัง",
+      "แสงสว่างนิรันดร์", "พระคุณล้นเหลือ", "แหล่งแห่งความยินดี", "การนำทางจากพระเจ้า", "ความสงบภายใน",
+      "ความสุขตลอดไป", "อายุยืน", "อนาคตสดใส", "ความสามัคคีในครอบครัว", "ความสำเร็จในอาชีพ",
+      "รักแท้", "ความสุขสงบ", "พระเจ้ากับคุณ", "พระคุณล้นหลาม", "แสงแห่งความหวัง",
+      // Hindi
+      "आपको आशीर्वाद", "शादी की खुशी", "ईश्वर की कृपा", "शांति और आनंद", "प्यार और आशा",
+      "अनंत प्रकाश", "प्रचुर कृपा", "आनंद का स्रोत", "दिव्य मार्गदर्शन", "आंतरिक शांति",
+      "हमेशा खुशी", "लंबी आयु", "उज्ज्वल भविष्य", "परिवार में सामंजस्य", "कैरियर में सफलता",
+      "सच्चा प्यार", "आनंदमय शांति", "ईश्वर आपके साथ", "अतिप्रवाह कृपा", "आशा का प्रकाश",
+      // Spanish
+      "Bendiciones", "Feliz Boda", "Gracia de Dios", "Paz y Alegría", "Amor y Esperanza",
+      "Luz Eterna", "Gracia Abundante", "Fuente de Alegría", "Guía Divina", "Paz Interior" ,
+      "Felicidad Eterna", "Larga Vida", "Futuro Brillante", "Armonía Familiar", "Éxito Profesional",
+      "Amor Verdadero", "Paz Alegre", "Dios Contigo", "Gracia Desbordante", "Luz de Esperanza"
+    ];
+
+    // Password
+    const correctPassword = "Blessing";
+
+    // DOM Elements
+    const passwordInput = document.getElementById("passwordInput");
+    const submitPassword = document.getElementById("submitPassword");
+    const reelContainer = document.getElementById("reelContainer");
+    const reelText = document.getElementById("reelText");
+    const reelIcon = document.getElementById("reelIcon");
+    const progressBar = document.getElementById("progressBar");
+    const languageSelect = document.querySelectorAll(".slider-option");
+    let currentLanguage = "zh";
+
+    // Update UI Text
+    function updateUIText(lang) {
+      const t = translations[lang];
+      document.getElementById("passwordTitle").textContent = t.passwordTitle;
+      document.getElementById("passwordTitle").className = `lang-${lang}`;
+      passwordInput.placeholder = t.passwordPlaceholder;
+      submitPassword.textContent = t.submitPassword;
+      document.getElementById("incorrectPasswordTitle").textContent = t.incorrectPasswordTitle;
+      document.getElementById("incorrectPasswordTitle").className = `lang-${lang}`;
+      document.getElementById("incorrectPasswordMessage").textContent = t.incorrectPasswordMessage;
+      document.getElementById("incorrectPasswordMessage").className = `lang-${lang}`;
+      document.querySelector("#incorrectPasswordModal .btn").textContent = t.closeButton;
+      document.getElementById("congratsMessage").textContent = t.congratsMessage;
+      document.getElementById("congratsMessage").className = `lang-${lang}`;
+      document.getElementById("blessingModalTitle").textContent = t.blessingModalTitle;
+      document.getElementById("blessingModalTitle").className = `lang-${lang}`;
+      document.getElementById("finalBlessingModalTitle").textContent = t.finalBlessingModalTitle;
+      document.getElementById("finalBlessingModalTitle").className = `lang-${lang}`;
+      document.getElementById("copyBlessing").title = t.copyBlessing;
+      document.getElementById("copyConfirmMessage").textContent = t.copyConfirmMessage;
+      document.getElementById("copyConfirmMessage").className = `lang-${lang}`;
+      reelText.textContent = t.reelStartText;
+    }
+
+    // Initialize UI
+    updateUIText("zh");
+
+    // Language Switcher
+    languageSelect.forEach(option => {
+      option.addEventListener("click", () => {
+        languageSelect.forEach(opt => opt.classList.remove("active"));
+        option.classList.add("active");
+        currentLanguage = option.dataset.lang;
+        updateUIText(currentLanguage);
+      });
+    });
+
+    // Password Validation
+    submitPassword.addEventListener("click", () => {
+      if (passwordInput.value.toLowerCase() === correctPassword.toLowerCase()) {
+        passwordInput.value = "";
+        const blessingModal = new bootstrap.Modal(document.getElementById("blessingModal"));
+        blessingModal.show();
+      } else {
+        new bootstrap.Modal(document.getElementById("incorrectPasswordModal")).show();
+        passwordInput.value = "";
+      }
+    });
+
+    // Reset reel state when blessing modal is shown
+    document.getElementById("blessingModal").addEventListener("show.bs.modal", () => {
+      isReelRunning = false;
+      reelText.textContent = translations[currentLanguage].reelStartText;
+      reelIcon.style.display = "none";
+      progressBar.style.width = "0%";
+      reelContainer.classList.remove("animate__animated", "animate__flash");
+    });
+
+    // Reel Animation
+    let isReelRunning = false;
+    reelContainer.addEventListener("click", () => {
+      if (isReelRunning) return;
+      isReelRunning = true;
+      reelIcon.style.display = "none";
+      progressBar.style.width = "0%";
+
+      let index = 0;
+      const interval = setInterval(() => {
+        reelText.textContent = reelPhrases[index % reelPhrases.length];
+        index++;
+      }, 50); // 50ms per phrase (20 phrases per second)
+
+      progressBar.style.width = "100%"; // Start progress bar animation
+      setTimeout(() => {
+        clearInterval(interval);
+        reelText.textContent = translations[currentLanguage].copyBlessing;
+        reelContainer.classList.add("animate__animated", "animate__flash");
+        reelIcon.style.display = "inline";
+        isReelRunning = false;
+      }, 5000);
+    });
+
+    // Final Blessing Modal
+    reelContainer.addEventListener("click", () => {
+      if (reelText.textContent !== translations[currentLanguage].copyBlessing) return;
+      const randomBlessing = blessings[Math.floor(Math.random() * blessings.length)];
+      document.getElementById("blessingVerse").textContent = randomBlessing.verse;
+      document.getElementById("blessingMessage").textContent = randomBlessing.message;
+      bootstrap.Modal.getInstance(document.getElementById("blessingModal")).hide();
+      const finalModal = new bootstrap.Modal(document.getElementById("finalBlessingModal"));
+      finalModal.show();
+    });
+
+    // Copy Blessing with Confirmation Modal
+    document.getElementById("copyBlessing").addEventListener("click", () => {
+      const verse = document.getElementById("blessingVerse").textContent;
+      const message = document.getElementById("blessingMessage").textContent;
+      navigator.clipboard.writeText(`${verse}\n${message}`).then(() => {
+        const copyConfirmModal = new bootstrap.Modal(document.getElementById("copyConfirmModal"));
+        copyConfirmModal.show();
+        setTimeout(() => {
+          copyConfirmModal.hide();
+        }, 500); // Auto-close after 0.5 seconds
+      });
+    });
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+</body>
+</html>
