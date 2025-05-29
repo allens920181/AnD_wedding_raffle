@@ -376,6 +376,68 @@
   }
 ]
 
+    const blessingsEn = [
+      {
+        "verse": "Psalm 23:1 <br>The Lord is my shepherd; I shall not want.",
+        "message": "Dear friend, may you experience God's tender care as a shepherd every day. No matter what challenges you face, know that there is a God who provides for you and guides you, filling your heart with peace and joy. In Jesus Christ's name, Amen."
+      },
+      {
+        "verse": "Philippians 4:13 <br>I can do all things through Christ who strengthens me.",
+        "message": "May you know that you are never alone in your weakness. There is a God who is willing to give you strength to face life's challenges courageously. With Him, you can overcome difficulties step by step and discover that you are stronger than you think. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Jeremiah 29:11 <br>For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.",
+        "message": "May you know that your life is not an accident. God has prepared peace and hope for you, not chaos and despair. Even if you cannot see the road ahead, He is making a way for you, guiding you toward a blessed future. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "John 3:16 <br>For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.",
+        "message": "May you deeply understand that there is a God who loves you so much that He sacrificed for you, redeeming every regretful thing you have ever done. He does not require you to be perfect first; He only hopes you are willing to know and accept His love, entering into this eternal and unchanging relationship. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Proverbs 3:5 <br>Trust in the Lord with all your heart, and do not lean on your own understanding.",
+        "message": "May you learn not only to rely on yourself but to trust this God who loves you in moments of doubt and choice. His ways often exceed our understanding, but He never makes mistakes. May you entrust yourself to Him and experience His guidance. In Jesus' name, Amen."
+      },
+      {
+        "verse": "Psalm 46:1 <br>God is our refuge and strength, a very present help in trouble.",
+        "message": "When the world feels too noisy and stressful, may you remember that God is your refuge. You can pour out your heart to Him and hide in His embrace. He is your ever-present help, never despising or leaving you. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Matthew 5:16 <br>Let your light shine before others, so that they may see your good works and give glory to your Father who is in heaven.",
+        "message": "May you live out your beauty and kindness, like a light that warms yourself and illuminates others. God has given you a unique meaning in life. May you live out this beauty and let others see hope through you. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Isaiah 40:31 <br>But they who wait for the Lord shall renew their strength.",
+        "message": "May you not give up hope in times of exhaustion, for those who wait for the Lord will renew their strength. He can make you soar on wings like eagles and run without growing weary. No matter how long the road is, may you rely on God and have the strength to keep going. In Jesus' name, Amen."
+      },
+      {
+        "verse": "Romans 15:13 <br>May the God of hope fill you with all joy and peace in believing, so that by the power of the Holy Spirit you may abound in hope.",
+        "message": "May the God of hope fill your heart, allowing you to experience peace and joy from Him in the process of trusting. Regardless of external circumstances, may you have an unshakable peace and joy in Him. God is with you. In Jesus' name, Amen."
+      },
+      {
+        "verse": "Psalm 121:1-2 <br>I lift up my eyes to the hills. From where does my help come? My help comes from the Lord, who made heaven and earth.",
+        "message": "When you look at the mountains and the unknowns of life, may you know that your help does not come from luck but from the God who created heaven and earth. He does not slumber, nor does He forget you. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Joshua 1:9 <br>Have I not commanded you? Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go.",
+        "message": "May you remember God's words in times of unease or fear: 'Do not be afraid, for I am with you.' He is not just a distant God but a companion in your life. May He give you strength and courage, steadying each step. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Psalm 37:4 <br>Delight yourself in the Lord, and he will give you the desires of your heart.",
+        "message": "May you discover that true joy is not external but in your relationship with God. When you delight in Him, your heart will be filled with true satisfaction and peace, and He is willing to fulfill the hopes in your heart. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "2 Corinthians 12:9 <br>My grace is sufficient for you, for my power is made perfect in weakness.",
+        "message": "May you know in your weakness that God does not despise you. His grace is just enough to fill your inadequacies. May you courageously and honestly face yourself and experience God's love and power in the process. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "James 1:5 <br>If any of you lacks wisdom, let him ask God, who gives generously to all without reproach, and it will be given him.",
+        "message": "When you do not know what to do, may you boldly ask God for wisdom, knowing that He is willing to guide you. Whether it is relationships, the future, or choices, may you hear His gentle response in prayer. May God bless you, in Jesus' name, Amen."
+      },
+      {
+        "verse": "Ephesians 3:20 <br>Now to him who is able to do far more abundantly than all that we ask or think, according to the power at work within us.",
+        "message": "May you believe that there is a God who is preparing far more than you can imagine. His power can work in your heart. Even if you do not yet know the outcome, He has already done wonderful things in your life. May God bless you, in Jesus' name, Amen."
+      }
+    ];
 
     // Reel Phrases
     const reelPhrases = [
@@ -455,7 +517,9 @@
 
         if (progress >= 100) {
           clearInterval(interval);
-          const selectedBlessing = blessings[Math.floor(Math.random() * blessings.length)];
+          const selectedBlessing = isEnglish
+            ? blessingsEn[Math.floor(Math.random() * blessingsEn.length)]
+            : blessings[Math.floor(Math.random() * blessings.length)];
           reelText.innerHTML = isEnglish
             ? `Click to Receive <i class='fas fa-angle-right'></i>`
             : `點擊領取 <i class='fas fa-angle-right'></i>`;
@@ -466,11 +530,14 @@
 
           // Set up modal trigger
           reelText.onclick = () => {
-            modalVerse.textContent = `經文：${selectedBlessing.verse}`;
-            modalMessage.textContent = `祝福：${selectedBlessing.message}`;
+            modalVerse.innerHTML = isEnglish
+              ? `Verse:<br>${selectedBlessing.verse}`
+              : `經文：<br>${selectedBlessing.verse}`;
+            modalMessage.innerHTML = isEnglish
+              ? `Blessing:<br>${selectedBlessing.message}`
+              : `祝福：<br>${selectedBlessing.message}`;
             blessingModal.show();
             document.querySelector('.btn-receive-copy').focus();
-            // No reset here; handled by modal hidden event
           };
         }
       }, 1000 / 20); // 20 FPS for animation
